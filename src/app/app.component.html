@@ -1,0 +1,55 @@
+<div class="app-container">
+  <header>
+    <h4>Olympic Medalists</h4>
+  </header>
+
+  <div class="app-content">
+    <div class="main-area">
+      <ag-grid-angular 
+          class="ag-theme-material"
+          [rowData]="rowData | async" 
+          [columnDefs]="columnDefs"
+          rowSelection='single'
+          (rowSelected)="onRowSelected($event)"
+          [pagination]="true"
+          >
+      </ag-grid-angular>
+    </div>
+    <div class="side-area" [class.open]="selectedData">
+      <div class="side-area-header">
+        <h6 class="m-0 mr-1">Details</h6>
+        <a href="javascript:void(0)" (click)="closeDetails()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+      <div class="side-area-content">
+        <table class="table table-bordered table-sm m-0" *ngIf="selectedData">
+          <tr>
+            <td>Athlete</td>
+            <td>{{selectedData.athlete}}</td>
+          </tr>
+          <tr>
+            <td>Country</td>
+            <td>{{selectedData.country}}</td>
+          </tr>
+          <tr>
+            <td>Sport</td>
+            <td>{{selectedData.sport}}</td>
+          </tr>
+          <tr>
+            <td>Gold</td>
+            <td>{{selectedData.gold}}</td>
+          </tr>
+          <tr>
+            <td>Silver</td>
+            <td>{{selectedData.silver}}</td>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <th>{{selectedData.total}}</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
