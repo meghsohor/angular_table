@@ -5,15 +5,43 @@
 
   <div class="app-content">
     <div class="main-area">
-      <ag-grid-angular 
-          class="ag-theme-material"
-          [rowData]="rowData | async" 
-          [columnDefs]="columnDefs"
-          rowSelection='single'
-          (rowSelected)="onRowSelected($event)"
-          [pagination]="true"
-          >
-      </ag-grid-angular>
+      <div class="data-table-area">
+        <table class="table table-sm table-hover" *ngIf="currentRows && currentRows.length">
+          <thead>
+            <tr>
+              <th *ngFor="let header of tableHeaders">
+                <a href="javascript:void(0)">{{header.headerName}}</a>
+                <span class="sort-icon">
+                    <i class="material-icons">keyboard_arrow_down</i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of currentRows" (click)="onRowSelected(row)" [class.active]="row.selected">
+              <td>{{row.athlete}}</td>
+              <td>{{row.age}}</td>
+              <td>{{row.country}}</td>
+              <td>{{row.year}}</td>
+              <td>{{row.date}}</td>
+              <td>{{row.sport}}</td>
+              <td>{{row.gold}}</td>
+              <td>{{row.silver}}</td>
+              <td>{{row.bronze}}</td>
+              <td>{{row.total}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-pagination">
+        <ul class="pagination">
+          <li *ngFor="let page of pageList" class="page-item" [class.active]="page.index === currentPage">
+            <a class="page-link" href="javascript:void(0)" (click)="gotoPage(page.index)">{{page.text}}</a>
+          </li>
+
+        </ul>
+      </div>
     </div>
     <div class="side-area" [class.open]="selectedData">
       <div class="side-area-header">

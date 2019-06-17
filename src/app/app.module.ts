@@ -2,11 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
-
-import { AgGridModule } from 'ag-grid-angular';
 
 import { AppComponent } from './app.component';
+import { DataService } from './services/data.service';
 
 @NgModule({
   declarations: [
@@ -15,10 +13,8 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     HttpClientModule,
-    AgGridModule.withComponents([]),
-    AppRoutingModule
   ],
-  providers: [],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

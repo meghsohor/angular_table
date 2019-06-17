@@ -34,10 +34,75 @@ header {
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        background: #f9f9f9;
 
-        ag-grid-angular {
-            width: 100%;
-            height: 100%;
+        .data-table-area {
+            flex: auto;
+            overflow: auto;
+
+            table {
+                margin: 0;
+
+                tr {
+
+                    &.active {
+                        background: #d3ebff;
+
+                        th, td {
+                            border-color: #a3d5ff;
+                        }
+                    }
+
+                    th {
+                        vertical-align: middle;
+                        border-bottom: 1px solid #e0e0e0;
+                        font-weight: 500;
+                        color: #777;
+                        padding: 0.5rem;
+                        padding-right: 24px;
+                        background: #ececec;
+                        font-size: 0.9rem;
+                        min-width: 80px;
+                        position: relative;
+
+                        a {
+                            color: #777;
+                            display: inline-block;
+                            text-decoration: none;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+
+                        .sort-icon {
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            width: 24px;
+                            height: 100%;
+                            display: grid;
+                            place-items: center;
+                            user-select: none;
+
+                            i {
+                                font-size: 1.2rem;
+                            }
+                        }
+                    }
+
+                    td {
+                        font-size: 0.9rem;
+                        vertical-align: middle;
+                        border-color: #e0e0e0;
+                        padding: 0.5rem;
+                    }
+                }
+            }
+        }
+
+        .table-pagination {
+            padding: 1rem;
         }
     }
 

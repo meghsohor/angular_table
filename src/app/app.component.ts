@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { DataService } from './services/data.service';
 
 @Component({
   selector: 'app-root',
@@ -7,85 +7,116 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ng-data-table';
+
+  rowData: any ;
+  currentRows: any;
+  pageSize: number = 20;
+  pageList: any [] = [];
+  currentPage: number = 0;
   selectedData: any = null;
 
-  columnDefs = [
+  tableHeaders = [
     {
       headerName: "Athlete",
       field: "athlete",
-      sortable: true, 
-      filter: true
     },
     {
       headerName: "Age",
       field: "age",
-      sortable: true, 
-      filter: true,
-      width: 100
     },
     {
       headerName: "Country",
       field: "country",
-      sortable: true, 
-      filter: true
     },
     {
       headerName: "Year",
       field: "year",
-      sortable: true, 
-      filter: true,
-      width: 100
     },
     {
       headerName: "Date",
       field: "date",
-      sortable: true, 
-      filter: true
     },
     {
       headerName: "Sport",
       field: "sport",
-      sortable: true, 
-      filter: true
     },
     {
       headerName: "Gold",
       field: "gold",
-      sortable: true
     },
     {
       headerName: "Silver",
       field: "silver",
-      sortable: true
     },
     {
       headerName: "Bronze",
       field: "bronze",
-      sortable: true
     },
     {
       headerName: "Total",
       field: "total",
-      sortable: true
     }
   ];
 
-  rowData: any;
-
-  constructor(private http: HttpClient) {
+  constructor(private dataService: DataService) {
 
   }
 
   ngOnInit() {
-    this.rowData = this.http.get(
+    this.dataService.get(
       "https://raw.githubusercontent.com/ag-grid/ag-grid/master/packages/ag-grid-docs/src/olympicWinnersSmall.json"
-    );
+    ).subscribe(
+      data => this.rowData = data,
+      error => console.log(error),
+      () => {
+        this.generatePages(0);
+        this.generatePageNumbers();
+      }
+      );
+
+    //console.log(this.rowData)
   }
 
-  onRowSelected(event) {
-    console.log(event.node.data);
-    this.selectedData = event.node.data;
+  generatePages(index) {
+    let startFrom = index * this.pageSize;
+    let endTo = startFrom + this.pageSize;
+
+    this.currentRows = [];
+
+    this.rowData.filter((row, index) => {
+      if(index >= startFrom && index < endTo) {
+        this.currentRows.push(row);
+      }
+    })
+    console.log(this.currentRows);
+  }
+
+  generatePageNumbers() {
+    let pagesCount = this.rowData.length / this.pageSize;
+
+    for(let i = 0; i < pagesCount; i++) {
+      this.pageList.push({
+        index: i,
+        text: i+1
+      })
+    }
+
+    console.log(this.pageList)
+  }
+
+  gotoPage(index) {
+    this.generatePages(index);
+    this.currentPage = index;
+  }
+
+  onRowSelected(data) {
+    this.currentRows.map(row => {
+      if(row.selected) {
+        return row.selected = false;
+      }
+    })
+    data.selected = true;
+    this.selectedData = data;
   }
 
   closeDetails() {

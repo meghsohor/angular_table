@@ -3,15 +3,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 
-$ag-icons-path: "../node_modules/ag-grid-community/src/styles/ag-theme-balham/icons/";
-@import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
-//@import "../node_modules/ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham.scss";
-
-//$odd-row-background-color: #CFD8DC;
-$primary-color: #2196F3; // blue-500
-$accent-color: #FFD740; // amber-A200
-@import '../node_modules/ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material';
-
 body {
     font-family: 'Roboto', sans-serif;
     height: 100vh;
