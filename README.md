@@ -1,3 +1,6 @@
+## Live Demo
+[Angular Table](https://meghsohor.github.io/angular_table)
+
 # NgDataTable
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.4.
