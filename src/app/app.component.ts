@@ -11,9 +11,13 @@ export class AppComponent {
   rowData: any ;
   currentRows: any;
   pageSize: number = 20;
-  pageList: any [] = [];
+  pagesCount: number = 0;
   currentPage: number = 0;
-  selectedData: any = null;
+  selectedRow: any = null;
+  sort: any  = {
+    field: '',
+    order: '',
+  };
 
   tableHeaders = [
     {
@@ -23,6 +27,7 @@ export class AppComponent {
     {
       headerName: "Age",
       field: "age",
+      width: "100",
     },
     {
       headerName: "Country",
@@ -31,6 +36,7 @@ export class AppComponent {
     {
       headerName: "Year",
       field: "year",
+      width: "120",
     },
     {
       headerName: "Date",
@@ -43,18 +49,22 @@ export class AppComponent {
     {
       headerName: "Gold",
       field: "gold",
+      width: "100",
     },
     {
       headerName: "Silver",
       field: "silver",
+      width: "100",
     },
     {
       headerName: "Bronze",
       field: "bronze",
+      width: "100",
     },
     {
       headerName: "Total",
       field: "total",
+      width: "100",
     }
   ];
 
@@ -63,63 +73,98 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.dataService.get(
-      "https://raw.githubusercontent.com/ag-grid/ag-grid/master/packages/ag-grid-docs/src/olympicWinnersSmall.json"
-    ).subscribe(
-      data => this.rowData = data,
-      error => console.log(error),
-      () => {
-        this.generatePages(0);
-        this.generatePageNumbers();
-      }
-      );
+    this.getData();
+  }
 
-    //console.log(this.rowData)
+  getData() {
+    this.dataService.get()
+      .subscribe(
+        data => this.rowData = data,
+        error => console.log(error),
+        () => {
+          this.pagesCount = this.rowData.length / this.pageSize;
+          this.generatePages(0);
+        }
+      );
   }
 
   generatePages(index) {
-    let startFrom = index * this.pageSize;
-    let endTo = startFrom + this.pageSize;
+    if(this.rowData.length) {
+      let startFrom = index * this.pageSize;
+      let endTo = startFrom + this.pageSize;
 
-    this.currentRows = [];
+      this.currentRows = [];
 
-    this.rowData.filter((row, index) => {
-      if(index >= startFrom && index < endTo) {
-        this.currentRows.push(row);
-      }
-    })
-    console.log(this.currentRows);
-  }
-
-  generatePageNumbers() {
-    let pagesCount = this.rowData.length / this.pageSize;
-
-    for(let i = 0; i < pagesCount; i++) {
-      this.pageList.push({
-        index: i,
-        text: i+1
-      })
+      this.rowData.filter((row, index) => {
+        if (index >= startFrom && index < endTo) {
+          this.currentRows.push(row);
+        }
+      });
     }
-
-    console.log(this.pageList)
   }
 
   gotoPage(index) {
     this.generatePages(index);
     this.currentPage = index;
+    console.log(this.currentRows)
   }
 
-  onRowSelected(data) {
-    this.currentRows.map(row => {
-      if(row.selected) {
-        return row.selected = false;
+  sortRows(field) {
+    if(field == this.sort.field) {
+      /* Reset Sorting */
+      if(this.sort.order === 'dsc') {
+        this.getData();
+
+        this.sort.field = '';
+        this.sort.order = 'none';
       }
-    })
-    data.selected = true;
-    this.selectedData = data;
+      /* Descending Sorting */
+      else {
+        this.rowData.sort((a, b) => {
+          if (a[field] > b[field]) {
+            return -1;
+          }
+          else {
+            return 1;
+          }
+        });
+
+        this.sort.order = 'dsc';
+      }
+    }
+    /* Ascending Sorting */
+    else {
+      this.rowData.sort((a, b) => {
+        if(a[field] < b[field]) {
+          return -1;
+        }
+        else {
+          return 1;
+        }
+      });
+
+      this.sort.field = field;
+      this.sort.order = 'asc';
+    }
+    //this.currentPage = 0;
+    this.generatePages(this.currentPage);
+
+  }
+
+  changeRowNumber(event) {
+    if (this.pageSize === event.target.value) {
+      return false;
+    }
+    this.pageSize = +event.target.value;
+    this.getData();
+    this.gotoPage(0);
+  }
+
+  onRowSelected(row) {
+    this.selectedRow = row;
   }
 
   closeDetails() {
-    this.selectedData = null;
+    this.selectedRow = null;
   }
 }

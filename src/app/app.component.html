@@ -9,17 +9,18 @@
         <table class="table table-sm table-hover" *ngIf="currentRows && currentRows.length">
           <thead>
             <tr>
-              <th *ngFor="let header of tableHeaders">
-                <a href="javascript:void(0)">{{header.headerName}}</a>
-                <span class="sort-icon">
-                    <i class="material-icons">keyboard_arrow_down</i>
+              <th *ngFor="let header of tableHeaders" [style.width.px]="header?.width">
+                <a href="javascript:void(0)" (click)="sortRows(header.field)">{{header.headerName}}</a>
+                <span class="sort-icon" *ngIf="header.field === sort.field">
+                  <i class="material-icons" *ngIf="sort.order === 'asc'">keyboard_arrow_down</i>
+                  <i class="material-icons" *ngIf="sort.order === 'dsc'">keyboard_arrow_up</i>
                 </span>
               </th>
             </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let row of currentRows" (click)="onRowSelected(row)" [class.active]="row.selected">
+            <tr *ngFor="let row of currentRows" (click)="onRowSelected(row)" [class.active]="row === selectedRow">
               <td>{{row.athlete}}</td>
               <td>{{row.age}}</td>
               <td>{{row.country}}</td>
@@ -34,16 +35,35 @@
           </tbody>
         </table>
       </div>
-      <div class="table-pagination">
-        <ul class="pagination">
-          <li *ngFor="let page of pageList" class="page-item" [class.active]="page.index === currentPage">
-            <a class="page-link" href="javascript:void(0)" (click)="gotoPage(page.index)">{{page.text}}</a>
-          </li>
+      <div class="table-pagination" *ngIf="rowData && rowData.length">
+        <div class="row-segment">
+          <label>Rows per page:</label>
+          <select class="form-control form-control-sm" (change)="changeRowNumber($event)">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
 
-        </ul>
+        <span>Showing {{(currentPage * pageSize) + 1}} - {{(currentPage + 1) * pageSize}} of {{rowData.length}}</span>
+
+        <button class="btn btn-sm btn-primary" [disabled]="currentPage === 0" (click)="gotoPage(0)">
+          <i class="material-icons">first_page</i>
+        </button>
+        <button class="btn btn-sm btn-primary" [disabled]="currentPage === 0" (click)="gotoPage(currentPage - 1)">
+          <i class="material-icons">chevron_left</i>
+        </button>
+        <button class="btn btn-sm btn-primary" [disabled]="(currentPage + 1) === pagesCount" (click)="gotoPage(currentPage + 1)">
+          <i class="material-icons">chevron_right</i>
+        </button>
+        <button class="btn btn-sm btn-primary" [disabled]="(currentPage + 1) === pagesCount" (click)="gotoPage(pagesCount - 1)">
+          <i class="material-icons">last_page</i>
+        </button>
       </div>
     </div>
-    <div class="side-area" [class.open]="selectedData">
+
+    <div class="side-area" [class.open]="selectedRow">
       <div class="side-area-header">
         <h6 class="m-0 mr-1">Details</h6>
         <a href="javascript:void(0)" (click)="closeDetails()">
@@ -51,30 +71,30 @@
         </a>
       </div>
       <div class="side-area-content">
-        <table class="table table-bordered table-sm m-0" *ngIf="selectedData">
+        <table class="table table-bordered table-sm m-0" *ngIf="selectedRow">
           <tr>
             <td>Athlete</td>
-            <td>{{selectedData.athlete}}</td>
+            <td>{{selectedRow.athlete}}</td>
           </tr>
           <tr>
             <td>Country</td>
-            <td>{{selectedData.country}}</td>
+            <td>{{selectedRow.country}}</td>
           </tr>
           <tr>
             <td>Sport</td>
-            <td>{{selectedData.sport}}</td>
+            <td>{{selectedRow.sport}}</td>
           </tr>
           <tr>
             <td>Gold</td>
-            <td>{{selectedData.gold}}</td>
+            <td>{{selectedRow.gold}}</td>
           </tr>
           <tr>
             <td>Silver</td>
-            <td>{{selectedData.silver}}</td>
+            <td>{{selectedRow.silver}}</td>
           </tr>
           <tr>
             <th>Total</th>
-            <th>{{selectedData.total}}</th>
+            <th>{{selectedRow.total}}</th>
           </tr>
         </table>
       </div>
